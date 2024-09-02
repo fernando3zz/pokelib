@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 const PokemonContext = createContext();
@@ -6,16 +6,24 @@ const PokemonContext = createContext();
 export const PokemonProvider = ({ children }) => {
   const [savedPokemons, setSavedPokemons] = useState([]);
 
-  const savePokemon = (pokemon, alias) => {
-    const newSavedPokemon = {
-      ...pokemon,
-      alias,
-    };
-    setSavedPokemons((prevPokemons) => [...prevPokemons, newSavedPokemon]);
+  // Memuat Pokémon dari Local Storage saat halaman dirender
+  useEffect(() => {
+    const loadedPokemons = JSON.parse(localStorage.getItem('savedPokemons')) || [];
+    setSavedPokemons(loadedPokemons);
+  }, []); // [] memastikan efek ini hanya dijalankan sekali saat komponen dipasang
+
+  const savePokemon = (pokemon) => {
+    let savedPokemons = JSON.parse(localStorage.getItem('savedPokemons')) || [];
+    savedPokemons.push(pokemon);
+    localStorage.setItem('savedPokemons', JSON.stringify(savedPokemons));
+    setSavedPokemons(savedPokemons);  // Update state in the context
   };
 
-  const removePokemon = (name) => {
-    setSavedPokemons((prevPokemons) => prevPokemons.filter(pokemon => pokemon.name !== name));
+  const removePokemon = (pokemonName) => {
+    let savedPokemons = JSON.parse(localStorage.getItem('savedPokemons')) || [];
+    savedPokemons = savedPokemons.filter(pokemon => pokemon.name !== pokemonName);
+    localStorage.setItem('savedPokemons', JSON.stringify(savedPokemons));
+    setSavedPokemons(savedPokemons);
   };
 
   return (
@@ -30,4 +38,3 @@ PokemonProvider.propTypes = {
 };
 
 export default PokemonContext;
-

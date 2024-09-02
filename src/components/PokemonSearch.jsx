@@ -78,7 +78,7 @@ function PokemonSearch() {
         <button 
           onClick={handleSearch} 
           className="bg-sky-400 py-2 px-3 font-medium rounded-md hover:bg-sky-500 rounded-l-none text-white"
-        >
+        > 
           Go!
         </button>
       </div>
